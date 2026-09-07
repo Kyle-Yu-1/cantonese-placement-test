@@ -10,7 +10,7 @@
 - `js/app.js` 核心逻辑：账号、存储、粤语语音合成、录音、Rasch 自适应引擎
 - `js/app-views.js` 界面流程：测试、报告、错题本、趋势、设置、评分规则
 - `question-bank.json` 由 `tools/gen-bank.js` 从题库源自动生成的 JSON 版（用于编辑/导入）
-- `api/score.js` AI 口语评分的无服务器函数示例（Vercel/Netlify + OpenAI）
+- `api/score.js` AI 口语评分的无服务器函数示例（Vercel，默认 DeepSeek，兼容 OpenAI）
 - `tools/gen-bank.js` 题库生成脚本
 
 ## 快速开始（本地演示模式）
@@ -90,11 +90,12 @@
 
 ## AI 口语评分部署（Vercel）
 
-1. 安装 Vercel CLI：`npm i -g vercel`，然后 `vercel login`；
-2. 在本项目根目录执行 `vercel`，按提示部署（会自动识别 `api/score.js`）；
+1. 口语题流程：浏览器语音识别（zh-HK）转写 → 调用接口 → DeepSeek 评分；浏览器不支持识别时自动回退为“录音自评”；
+2. 安装 Vercel CLI：`npm i -g vercel`，然后 `vercel login`；在本项目根目录执行 `vercel` 部署（会自动识别 `api/score.js`）；
 3. 在 Vercel 项目 Settings → Environment Variables 添加：
-   - `OPENAI_API_KEY`（必填）
-   - `SPEECH_MODEL`（可选，默认 gpt-4o-transcribe）
-   - `SCORE_API_KEY`（可选，作为接口请求密钥）
+   - `DEEPSEEK_API_KEY`（必填，口语评分主用）
+   - `DEEPSEEK_MODEL`（可选，默认 deepseek-chat）
+   - `OPENAI_API_KEY` / `SPEECH_MODEL`（可选，仅使用 OpenAI 转写兼容模式时需要）
 4. 部署后接口地址形如 `https://你的项目.vercel.app/api/score`；
 5. 打开网站「设置 → AI 口语评分接口」，填入该地址与 `SCORE_API_KEY`。
+DeepSeek 说明：DeepSeek 为纯文本模型，本方案用浏览器 SpeechRecognition（语言 zh-HK/粤语）先把跟读转成文字，再把「识别文本 + 示范文本 + 粤拼」交给 DeepSeek 打出发音/声调/流利度三项分。浏览器没有粤语识别能力时会自动降级为录音自评，不影响测试流程。
