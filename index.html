@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<title>粤语能力定位测验</title>
+<link rel='stylesheet' href='styles.css'>
+</head>
+<body>
+<header id='topbar' class='hidden'>
+  <button id='brandBtn' class='brand' title='返回首页'>🎙️ 粤语能力定位测验</button>
+  <div class='top-right'>
+    <label class='switch-label' title='显示或隐藏粤语拼音'><input type='checkbox' id='jpToggle' checked><span>粤拼</span></label>
+    <span id='userChip' class='chip'></span>
+    <button id='logoutBtn' class='btn ghost'>退出</button>
+  </div>
+</header>
+<main id='app' class='container'></main>
+<div id='toast' class='toast'></div>
+<script src='js/question-bank.js'></script>
+<script src='js/app.js'></script>
+<script src='js/app-views.js'></script>
+</body>
+</html>
