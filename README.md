@@ -6,7 +6,7 @@
 
 - `index.html` 入口页面
 - `styles.css` 样式
-- `js/question-bank.js` 内置题库（单一数据源，48 题，L1–L6 × 6 个维度）
+- `js/question-bank.js` 内置题库（单一数据源，90 题，L1–L6 × 6 个维度）
 - `js/app.js` 核心逻辑：账号、存储、粤语语音合成、录音、Rasch 自适应引擎
 - `js/app-views.js` 界面流程：测试、报告、错题本、趋势、设置、评分规则
 - `question-bank.json` 由 `tools/gen-bank.js` 从题库源自动生成的 JSON 版（用于编辑/导入）
@@ -76,4 +76,25 @@
 
 - 本地演示模式没有服务端账号/云同步；正式版可接 Supabase/Firebase 做邮箱登录与跨设备成绩同步。
 - 浏览器粤语 TTS 音色取决于系统；可把 `audioText` 换成真人录音 URL 得到更地道的听力。
-- 内置题库 48 题仅作演示，正式使用前请人工审校粤拼与声调，并按同一 schema 扩充题量。
+- 内置题库 90 题（每级 15 题），正式使用前仍建议人工审校粤拼与声调，并按同一 schema 扩充题量。
+## 云端同步（Supabase，可选）
+
+1. 到 supabase.com 注册并新建一个项目；
+2. 在项目的 SQL Editor 执行 `supabase/schema.sql`（建 `app_state` 表并开启 RLS）；
+3. 建议在 Authentication → Providers → Email 中关闭 Confirm email，方便演示；
+4. 在项目 Settings → API 复制 Project URL 与 anon public key；
+5. 打开网站「设置 → 云端同步」填这两项 → 「保存并用云端登录」，之后注册/登录即走云端，成绩跨设备同步。
+
+- anon key 本就是公开密钥，网页内填写即可；本项目不会把密钥写进代码。
+- 两项都留空时，全部功能保持纯本地模式，行为与之前完全一致。
+
+## AI 口语评分部署（Vercel）
+
+1. 安装 Vercel CLI：`npm i -g vercel`，然后 `vercel login`；
+2. 在本项目根目录执行 `vercel`，按提示部署（会自动识别 `api/score.js`）；
+3. 在 Vercel 项目 Settings → Environment Variables 添加：
+   - `OPENAI_API_KEY`（必填）
+   - `SPEECH_MODEL`（可选，默认 gpt-4o-transcribe）
+   - `SCORE_API_KEY`（可选，作为接口请求密钥）
+4. 部署后接口地址形如 `https://你的项目.vercel.app/api/score`；
+5. 打开网站「设置 → AI 口语评分接口」，填入该地址与 `SCORE_API_KEY`。

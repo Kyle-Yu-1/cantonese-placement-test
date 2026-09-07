@@ -904,5 +904,770 @@
     "audioText": "我哋得闲一齐去饮茶倾偈啦。",
     "jyutping": "ngo5 dei6 dak1 haan4 jat1 cai4 heoi3 jam2 caa4 king1 gai2 laa1",
     "explanation": "得闲=有空；句子是邀约：“我们有空一起去喝茶聊天吧。”"
+  },
+  {
+    "id": "L1-09",
+    "level": 1,
+    "difficulty": -3.8,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "听到的词适合在什么时候说？",
+    "text": "多谢",
+    "audioText": "多谢",
+    "jyutping": "do1 ze6",
+    "options": [
+      "收到礼物或得到帮助后道谢",
+      "早上见面打招呼",
+      "请人让路",
+      "晚上告别"
+    ],
+    "answer": 0,
+    "explanation": "「多谢」=谢谢，多用于收到礼物、得到实质性帮助时。"
+  },
+  {
+    "id": "L1-10",
+    "level": 1,
+    "difficulty": -3.6,
+    "dimension": "vocabulary",
+    "type": "mc",
+    "prompt": "「我叫…」一般用来做什么？",
+    "text": "我叫…",
+    "jyutping": "ngo5 giu3 …",
+    "options": [
+      "自我介绍",
+      "问路",
+      "点菜",
+      "告别"
+    ],
+    "answer": 0,
+    "explanation": "「我叫+名字」用于自我介绍，如“我叫小明”。"
+  },
+  {
+    "id": "L1-11",
+    "level": 1,
+    "difficulty": -3.4,
+    "dimension": "jyutping",
+    "type": "mc",
+    "prompt": "「你」的正确粤拼是？",
+    "text": "你",
+    "jyutping": "nei5",
+    "options": [
+      "nei5",
+      "nei2",
+      "ni5",
+      "ngo5"
+    ],
+    "answer": 0,
+    "explanation": "你=nei5，第5声（低升调）。"
+  },
+  {
+    "id": "L1-12",
+    "level": 1,
+    "difficulty": -3.2,
+    "dimension": "grammar",
+    "type": "mc",
+    "prompt": "「呢个係苹果。」中「係」的意思是？",
+    "text": "呢个係苹果。",
+    "jyutping": "ni1 go3 hai6 ping4 gwo2",
+    "options": [
+      "是",
+      "有",
+      "在",
+      "去"
+    ],
+    "answer": 0,
+    "explanation": "呢个=这个，係=是，苹果=苹果。"
+  },
+  {
+    "id": "L1-13",
+    "level": 1,
+    "difficulty": -3,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "你听到的是？",
+    "text": "再见",
+    "audioText": "再见",
+    "jyutping": "zoi3 gin3",
+    "options": [
+      "再见",
+      "谢谢",
+      "你好",
+      "对不起"
+    ],
+    "answer": 0,
+    "explanation": "再见=zoi3 gin3，告别用语。"
+  },
+  {
+    "id": "L1-14",
+    "level": 1,
+    "difficulty": -2.8,
+    "dimension": "speaking",
+    "type": "speaking",
+    "prompt": "听示范后跟读「早晨」。",
+    "text": "早晨",
+    "audioText": "早晨",
+    "jyutping": "zou2 san4",
+    "explanation": "早=zou2 第2声，晨=san4 第4声，早上见面用语。"
+  },
+  {
+    "id": "L1-15",
+    "level": 1,
+    "difficulty": -2.66,
+    "dimension": "jyutping",
+    "type": "match",
+    "prompt": "把字和粤拼连起来。",
+    "text": "食 水 饭 茶",
+    "jyutping": "sik6 seoi2 faan6 caa4",
+    "pairs": [
+      {
+        "left": "食",
+        "right": "sik6"
+      },
+      {
+        "left": "水",
+        "right": "seoi2"
+      },
+      {
+        "left": "饭",
+        "right": "faan6"
+      },
+      {
+        "left": "茶",
+        "right": "caa4"
+      }
+    ],
+    "explanation": "食 sik6、水 seoi2、饭 faan6、茶 caa4。"
+  },
+  {
+    "id": "L2-09",
+    "level": 2,
+    "difficulty": -2.55,
+    "dimension": "vocabulary",
+    "type": "mc",
+    "prompt": "「你食咗饭未？」是什么意思？",
+    "text": "你食咗饭未？",
+    "jyutping": "nei5 sik6 zo2 faan6 mei6",
+    "options": [
+      "你吃饭了吗？",
+      "你想吃饭吗？",
+      "饭好吃吗？",
+      "谁去吃饭？"
+    ],
+    "answer": 0,
+    "explanation": "咗=了（完成），未=还没有；整句是熟人间的问候“吃饭了吗”。"
+  },
+  {
+    "id": "L2-10",
+    "level": 2,
+    "difficulty": -2.35,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "说话人在说什么？",
+    "text": "我係学生。",
+    "audioText": "我係学生。",
+    "jyutping": "ngo5 hai6 hok6 saang1",
+    "options": [
+      "我是学生",
+      "我在学校",
+      "我喜欢学生",
+      "我去上学"
+    ],
+    "answer": 0,
+    "explanation": "係=是，学生=学生。"
+  },
+  {
+    "id": "L2-11",
+    "level": 2,
+    "difficulty": -2.15,
+    "dimension": "jyutping",
+    "type": "mc",
+    "prompt": "「饭」的粤拼是？",
+    "text": "饭",
+    "jyutping": "faan6",
+    "options": [
+      "faan6",
+      "faan1",
+      "fan6",
+      "faan5"
+    ],
+    "answer": 0,
+    "explanation": "饭=faan6，第6声（低平调）。"
+  },
+  {
+    "id": "L2-12",
+    "level": 2,
+    "difficulty": -1.95,
+    "dimension": "grammar",
+    "type": "mc",
+    "prompt": "「我冇钱。」中「冇」的意思是？",
+    "text": "我冇钱。",
+    "jyutping": "ngo5 mou5 cin4",
+    "options": [
+      "没有",
+      "有",
+      "不要",
+      "买"
+    ],
+    "answer": 0,
+    "explanation": "冇=没有（对应“有”的否定）；钱=cin4。"
+  },
+  {
+    "id": "L2-13",
+    "level": 2,
+    "difficulty": -1.75,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "你听到的问题是？",
+    "text": "你几岁？",
+    "audioText": "你几岁？",
+    "jyutping": "nei5 gei2 seoi3",
+    "options": [
+      "你几岁？",
+      "你几点？",
+      "你多少钱？",
+      "你叫什么？"
+    ],
+    "answer": 0,
+    "explanation": "几岁=多少岁；问时间才用「几点」。"
+  },
+  {
+    "id": "L2-14",
+    "level": 2,
+    "difficulty": -1.55,
+    "dimension": "slang",
+    "type": "mc",
+    "prompt": "粤语「饮嘢」是什么意思？",
+    "text": "饮嘢",
+    "jyutping": "jam2 je5",
+    "options": [
+      "喝点东西（饮料）",
+      "吃东西",
+      "喝酒必醉",
+      "喝汤"
+    ],
+    "answer": 0,
+    "explanation": "饮=喝，嘢=东西；饮嘢=喝饮料/喝点东西。"
+  },
+  {
+    "id": "L2-15",
+    "level": 2,
+    "difficulty": -1.35,
+    "dimension": "speaking",
+    "type": "speaking",
+    "prompt": "听示范后跟读「我係学生。」",
+    "text": "我係学生。",
+    "audioText": "我係学生。",
+    "jyutping": "ngo5 hai6 hok6 saang1",
+    "explanation": "注意「係」读 hai6（第6声低平调），不是普通话的 xì。"
+  },
+  {
+    "id": "L3-09",
+    "level": 3,
+    "difficulty": -1.25,
+    "dimension": "vocabulary",
+    "type": "mc",
+    "prompt": "「厕所」的粤拼是？",
+    "text": "厕所",
+    "jyutping": "ci3 so2",
+    "options": [
+      "ci3 so2",
+      "ce1 so2",
+      "ci3 sou2",
+      "ci2 so3"
+    ],
+    "answer": 0,
+    "explanation": "厕=ci3，所=so2。"
+  },
+  {
+    "id": "L3-10",
+    "level": 3,
+    "difficulty": -1.05,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "你听到的问题是？",
+    "text": "你住喺边度？",
+    "audioText": "你住喺边度？",
+    "jyutping": "nei5 zyu6 hai2 bin1 dou6",
+    "options": [
+      "你住在哪里？",
+      "你去哪里？",
+      "你从哪里来？",
+      "你几时来？"
+    ],
+    "answer": 0,
+    "explanation": "住喺=住在，边度=哪里。"
+  },
+  {
+    "id": "L3-11",
+    "level": 3,
+    "difficulty": -0.85,
+    "dimension": "grammar",
+    "type": "mc",
+    "prompt": "「我未食饭。」中「未」表示？",
+    "text": "我未食饭。",
+    "jyutping": "ngo5 mei6 sik6 faan6",
+    "options": [
+      "还没有",
+      "已经",
+      "正在",
+      "不要"
+    ],
+    "answer": 0,
+    "explanation": "未=还没有（否定“已经发生”）。"
+  },
+  {
+    "id": "L3-12",
+    "level": 3,
+    "difficulty": -0.65,
+    "dimension": "slang",
+    "type": "mc",
+    "prompt": "「肚饿」是什么意思？",
+    "text": "肚饿",
+    "jyutping": "tou5 ngo6",
+    "options": [
+      "肚子饿",
+      "肚子痛",
+      "口渴",
+      "想睡觉"
+    ],
+    "answer": 0,
+    "explanation": "肚=肚子，饿=饿；口渴是「颈渴」或「口渴」。"
+  },
+  {
+    "id": "L3-13",
+    "level": 3,
+    "difficulty": -0.45,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "这句话在问什么？",
+    "text": "你想食啲乜嘢？",
+    "audioText": "你想食啲乜嘢？",
+    "jyutping": "nei5 soeng2 sik6 di1 mat1 je5",
+    "options": [
+      "你想吃点什么？",
+      "你想喝点什么？",
+      "你想买什么？",
+      "你想去哪儿？"
+    ],
+    "answer": 0,
+    "explanation": "食啲乜嘢=吃点什么。"
+  },
+  {
+    "id": "L3-14",
+    "level": 3,
+    "difficulty": -0.25,
+    "dimension": "jyutping",
+    "type": "match",
+    "prompt": "把动词和粤拼连起来。",
+    "text": "饮 食 睇 听",
+    "jyutping": "jam2 sik6 tai2 teng1",
+    "pairs": [
+      {
+        "left": "饮",
+        "right": "jam2"
+      },
+      {
+        "left": "食",
+        "right": "sik6"
+      },
+      {
+        "left": "睇",
+        "right": "tai2"
+      },
+      {
+        "left": "听",
+        "right": "teng1"
+      }
+    ],
+    "explanation": "饮=喝、食=吃、睇=看、听=听。"
+  },
+  {
+    "id": "L3-15",
+    "level": 3,
+    "difficulty": -0.05,
+    "dimension": "speaking",
+    "type": "speaking",
+    "prompt": "听示范后跟读「你食咗饭未？」",
+    "text": "你食咗饭未？",
+    "audioText": "你食咗饭未？",
+    "jyutping": "nei5 sik6 zo2 faan6 mei6",
+    "explanation": "「咗」zo2 第2声、「未」mei6 第6声，注意句末上扬的问候语气。"
+  },
+  {
+    "id": "L4-09",
+    "level": 4,
+    "difficulty": 0.2,
+    "dimension": "grammar",
+    "type": "mc",
+    "prompt": "「我睇紧电视。」中「紧」表示？",
+    "text": "我睇紧电视。",
+    "jyutping": "ngo5 tai2 gan2 din6 si6",
+    "options": [
+      "正在（进行中）",
+      "已经完成",
+      "打算",
+      "习惯"
+    ],
+    "answer": 0,
+    "explanation": "「紧」(gan2)=正在；睇电视=看电视。"
+  },
+  {
+    "id": "L4-10",
+    "level": 4,
+    "difficulty": 0.4,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "这句话在问什么？",
+    "text": "你去过香港未？",
+    "audioText": "你去过香港未？",
+    "jyutping": "nei5 heoi3 gwo3 hoeng1 gong2 mei6",
+    "options": [
+      "你去过香港没有？",
+      "你想去香港吗？",
+      "香港怎么样？",
+      "怎么去香港？"
+    ],
+    "answer": 0,
+    "explanation": "过=曾经历过；未=没有（句末）。"
+  },
+  {
+    "id": "L4-11",
+    "level": 4,
+    "difficulty": 0.6,
+    "dimension": "vocabulary",
+    "type": "mc",
+    "prompt": "「好攰」中「攰」的意思是？",
+    "text": "好攰",
+    "jyutping": "hou2 gui6",
+    "options": [
+      "累",
+      "忙",
+      "饿",
+      "开心"
+    ],
+    "answer": 0,
+    "explanation": "攰=累、疲倦。"
+  },
+  {
+    "id": "L4-12",
+    "level": 4,
+    "difficulty": 0.8,
+    "dimension": "slang",
+    "type": "mc",
+    "prompt": "粤语「好嘢」在口语中常表示？",
+    "text": "好嘢",
+    "jyutping": "hou2 je5",
+    "options": [
+      "好棒/好东西",
+      "好人",
+      "坏事",
+      "太贵了"
+    ],
+    "answer": 0,
+    "explanation": "好嘢=太好了、好东西。"
+  },
+  {
+    "id": "L4-13",
+    "level": 4,
+    "difficulty": 1,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "说话人提议做什么？",
+    "text": "我哋去食晏啦。",
+    "audioText": "我哋去食晏啦。",
+    "jyutping": "ngo5 dei6 heoi3 sik6 aan3 laa1",
+    "options": [
+      "去吃午饭",
+      "去吃晚饭",
+      "去喝茶",
+      "去散步"
+    ],
+    "answer": 0,
+    "explanation": "食晏=吃午饭；食晚饭是「食夜晚」。"
+  },
+  {
+    "id": "L4-14",
+    "level": 4,
+    "difficulty": 1.15,
+    "dimension": "vocabulary",
+    "type": "match",
+    "prompt": "把词语和意思连起来。",
+    "text": "返工 放工 返学 瞓觉",
+    "jyutping": "faan1 gung1 fong3 gung1 faan1 hok6 fan3 gaau3",
+    "pairs": [
+      {
+        "left": "返工",
+        "right": "上班"
+      },
+      {
+        "left": "放工",
+        "right": "下班"
+      },
+      {
+        "left": "返学",
+        "right": "上学"
+      },
+      {
+        "left": "瞓觉",
+        "right": "睡觉"
+      }
+    ],
+    "explanation": "返工=上班、放工=下班、返学=上学、瞓觉=睡觉。"
+  },
+  {
+    "id": "L4-15",
+    "level": 4,
+    "difficulty": 1.25,
+    "dimension": "speaking",
+    "type": "speaking",
+    "prompt": "听示范后跟读「我想食啲嘢。」",
+    "text": "我想食啲嘢。",
+    "audioText": "我想食啲嘢。",
+    "jyutping": "ngo5 soeng2 sik6 di1 je5",
+    "explanation": "「啲」读 di1，表示“一点/一些”。"
+  },
+  {
+    "id": "L5-09",
+    "level": 5,
+    "difficulty": 1.5,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "这句话在问什么？",
+    "text": "你听日得唔得闲？",
+    "audioText": "你听日得唔得闲？",
+    "jyutping": "nei5 ting1 jat6 dak1 m4 dak1 haan4",
+    "options": [
+      "你明天有没有空？",
+      "你明天去哪里？",
+      "你今天忙吗？",
+      "你昨天有空吗？"
+    ],
+    "answer": 0,
+    "explanation": "得唔得闲=有没有空。"
+  },
+  {
+    "id": "L5-10",
+    "level": 5,
+    "difficulty": 1.7,
+    "dimension": "grammar",
+    "type": "mc",
+    "prompt": "「我食咗饭先走。」中「先」表示？",
+    "text": "我食咗饭先走。",
+    "jyutping": "ngo5 sik6 zo2 faan6 sin1 zau2",
+    "options": [
+      "先……再（次序）",
+      "最早",
+      "前面",
+      "以前"
+    ],
+    "answer": 0,
+    "explanation": "粤语「先」常放句末，表示“先做某事再……”。"
+  },
+  {
+    "id": "L5-11",
+    "level": 5,
+    "difficulty": 1.9,
+    "dimension": "vocabulary",
+    "type": "mc",
+    "prompt": "「几钱」是什么意思？",
+    "text": "几钱",
+    "jyutping": "gei2 cin4",
+    "options": [
+      "多少钱",
+      "几点",
+      "多少岁",
+      "为什么"
+    ],
+    "answer": 0,
+    "explanation": "几钱=多少钱（「几多钱」的口语缩略）。"
+  },
+  {
+    "id": "L5-12",
+    "level": 5,
+    "difficulty": 2.1,
+    "dimension": "slang",
+    "type": "mc",
+    "prompt": "粤语「冇问题」常用来表示？",
+    "text": "冇问题",
+    "jyutping": "mou5 man6 tai4",
+    "options": [
+      "没问题/可以",
+      "有问题",
+      "不知道",
+      "谢谢"
+    ],
+    "answer": 0,
+    "explanation": "冇问题=没问题、可以、不用客气。"
+  },
+  {
+    "id": "L5-13",
+    "level": 5,
+    "difficulty": 2.3,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "说话人在提醒什么？",
+    "text": "记得带遮，就快落雨喇。",
+    "audioText": "记得带遮，就快落雨喇。",
+    "jyutping": "gei3 dak1 daai3 ze1 zau6 faai3 lok6 jyu5 laa3",
+    "options": [
+      "快下雨了，记得带伞",
+      "风大要关窗",
+      "天热多喝水",
+      "路上注意安全"
+    ],
+    "answer": 0,
+    "explanation": "就快=快要，落雨=下雨，遮=伞。"
+  },
+  {
+    "id": "L5-14",
+    "level": 5,
+    "difficulty": 2.5,
+    "dimension": "jyutping",
+    "type": "mc",
+    "prompt": "「而家」的粤拼是？",
+    "text": "而家",
+    "jyutping": "ji4 gaa1",
+    "options": [
+      "ji4 gaa1",
+      "ji4 gaa3",
+      "yi4 gaa1",
+      "ji5 gaa1"
+    ],
+    "answer": 0,
+    "explanation": "而家=现在：ji4 gaa1。"
+  },
+  {
+    "id": "L5-15",
+    "level": 5,
+    "difficulty": 2.65,
+    "dimension": "speaking",
+    "type": "speaking",
+    "prompt": "听示范后跟读「我哋听日一齐去饮茶啦。」",
+    "text": "我哋听日一齐去饮茶啦。",
+    "audioText": "我哋听日一齐去饮茶啦。",
+    "jyutping": "ngo5 dei6 ting1 jat6 jat1 cai4 heoi3 jam2 caa4 laa1",
+    "explanation": "我哋=我们、一齐=一起；注意连续变调的语流。"
+  },
+  {
+    "id": "L6-09",
+    "level": 6,
+    "difficulty": 2.9,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "这句话表达什么？",
+    "text": "唔好意思，我迟咗。",
+    "audioText": "唔好意思，我迟咗。",
+    "jyutping": "m4 hou2 ji3 si1 ngo5 ci4 zo2",
+    "options": [
+      "道歉：不好意思，我迟到了",
+      "邀请别人",
+      "拒绝别人",
+      "道别"
+    ],
+    "answer": 0,
+    "explanation": "唔好意思=不好意思/抱歉；迟咗=迟到了。"
+  },
+  {
+    "id": "L6-10",
+    "level": 6,
+    "difficulty": 3.1,
+    "dimension": "grammar",
+    "type": "mc",
+    "prompt": "「你等阵再打嚟。」中「等阵」的意思是？",
+    "text": "你等阵再打嚟。",
+    "jyutping": "nei5 dang2 zan6 zoi3 daa2 lai4",
+    "options": [
+      "等一会儿",
+      "立刻",
+      "明天",
+      "刚刚"
+    ],
+    "answer": 0,
+    "explanation": "等阵=等一会儿；打嚟=打来（电话）。"
+  },
+  {
+    "id": "L6-11",
+    "level": 6,
+    "difficulty": 3.3,
+    "dimension": "vocabulary",
+    "type": "mc",
+    "prompt": "「硬係」是什么意思？",
+    "text": "硬係",
+    "jyutping": "ngaang6 hai6",
+    "options": [
+      "总是、偏偏",
+      "很硬",
+      "必须",
+      "不一定"
+    ],
+    "answer": 0,
+    "explanation": "硬係=偏偏、总是（带无奈语气）。"
+  },
+  {
+    "id": "L6-12",
+    "level": 6,
+    "difficulty": 3.5,
+    "dimension": "slang",
+    "type": "mc",
+    "prompt": "「倾掂」是什么意思？",
+    "text": "倾掂",
+    "jyutping": "king1 dim6",
+    "options": [
+      "谈妥了",
+      "说错了",
+      "没得谈",
+      "慢慢聊"
+    ],
+    "answer": 0,
+    "explanation": "倾=谈，掂=妥当；倾掂=谈妥、商量好。"
+  },
+  {
+    "id": "L6-13",
+    "level": 6,
+    "difficulty": 3.7,
+    "dimension": "listening",
+    "type": "listening",
+    "prompt": "这句话在问什么？",
+    "text": "搞掂晒未呀？",
+    "audioText": "搞掂晒未呀？",
+    "jyutping": "gaau2 dim6 saai3 mei6 aa3",
+    "options": [
+      "都搞定了没有？",
+      "多少钱？",
+      "谁做的？",
+      "什么时候开始？"
+    ],
+    "answer": 0,
+    "explanation": "搞掂=搞定，晒=全部，未=没有。"
+  },
+  {
+    "id": "L6-14",
+    "level": 6,
+    "difficulty": 3.85,
+    "dimension": "jyutping",
+    "type": "mc",
+    "prompt": "「屋企」的粤拼是？",
+    "text": "屋企",
+    "jyutping": "uk1 kei2",
+    "options": [
+      "uk1 kei2",
+      "wu1 kei2",
+      "uk1 kei5",
+      "ou1 kei2"
+    ],
+    "answer": 0,
+    "explanation": "屋企=家/家里：uk1 kei2。"
+  },
+  {
+    "id": "L6-15",
+    "level": 6,
+    "difficulty": 3.95,
+    "dimension": "speaking",
+    "type": "speaking",
+    "prompt": "听示范后跟读「唔好意思，我想问下路。」",
+    "text": "唔好意思，我想问下路。",
+    "audioText": "唔好意思，我想问下路。",
+    "jyutping": "m4 hou2 ji3 si1 ngo5 soeng2 man6 haa5 lou6",
+    "explanation": "问路=man6 lou6；「下」作量词读 haa5。"
   }
 ]
