@@ -8,6 +8,7 @@
 //   OPENAI_API_KEY   可选（模式 B）
 //   SPEECH_MODEL     可选，默认 gpt-4o-transcribe
 //   SCORE_API_KEY    可选，若设置则要求请求头 x-api-key 与之匹配
+// redeploy: DEEPSEEK enabled
 module.exports = async function handler(req, res) {
   const send = function(code, obj){
     res.statusCode = code;
