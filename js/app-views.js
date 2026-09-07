@@ -2,6 +2,7 @@
 'use strict';
 
 let engine=null, curItem=null, startTime=0;
+const SCORE_DEFAULT_ENDPOINT = 'https://cantonese-placement-test.vercel.app/api/score';
 let drillMode=false, drillList=[], drillIdx=0, drillRight=0;
 
 /* ============ 首页 ============ */
@@ -178,7 +179,7 @@ function bindQuestion(q, isDrill){
 function aiConfig(){
   const u=Store.current();
   const s=u ? (Store.data(u).settings||{}) : {};
-  return { endpoint:(s.aiEndpoint||'').trim(), key:(s.aiKey||'').trim() };
+  return { endpoint:(s.aiEndpoint||SCORE_DEFAULT_ENDPOINT).trim(), key:(s.aiKey||'').trim() };
 }
 
 async function aiScore(blob, item, cfg){
@@ -522,7 +523,7 @@ function renderSettings(){
    '<div class="card">' +
      '<h3>🤖 AI 口语评分接口（可选）</h3>' +
      '<p class="muted">留空则口语题使用“示范对照 + 手动打分”。接口需接受 POST JSON，返回 {accuracy,tone,fluency,feedback}（0–1 或 0–100）。本项目已附 api/score.js 示例。</p>' +
-     '<label class="field">接口地址<input id="aiEndpoint" value="'+esc(s.aiEndpoint||'')+'" placeholder="https://你的域名/api/score"></label>' +
+     '<label class="field">接口地址<input id="aiEndpoint" value="'+esc(s.aiEndpoint||SCORE_DEFAULT_ENDPOINT)+'" placeholder="https://你的域名/api/score"></label>' +
      '<label class="field">API Key<input id="aiKey" type="password" value="'+esc(s.aiKey||'')+'" placeholder="服务端校验用，可留空"></label>' +
    '</div>' +
    '<div class="card">' +
