@@ -753,10 +753,23 @@ function drawTrend(recs){
   for (let v = 0; v <= 30; v += 10){ const y = T + (H-T-B) * (1 - v/30); g.strokeStyle='#e8edf4'; g.beginPath(); g.moveTo(L,y); g.lineTo(W-Rm,y); g.stroke(); g.fillStyle='#94a3b8'; g.fillText(String(v), L-8, y+4); }
   g.textAlign = 'center'; g.fillStyle = '#64748b';
   if (!recs.length){ g.fillText('暂无数据', W/2, H/2); return; }
-  const pts = recs.map((r, i) => [L + (W-L-Rm) * (recs.length === 1 ? 0.5 : i/(recs.length-1)), T + (H-T-B) * (1 - r.total/30)]);
+  // 按练习轮次编号升序排列，x 坐标严格按「第 N 次」编号映射
+  const sorted = recs.slice().sort((a,b) => Number(a.attempt) - Number(b.attempt));
+  const minA = Number(sorted[0].attempt);
+  const maxA = Number(sorted[sorted.length-1].attempt);
+  const span = Math.max(1, maxA - minA);
+  const pts = sorted.map((r) => {
+    const t = sorted.length === 1 ? 0.5 : (Number(r.attempt) - minA) / span;
+    return { x: L + (W-L-Rm) * t, y: T + (H-T-B) * (1 - r.total/30), r: r };
+  });
   g.strokeStyle = '#4f46e5'; g.lineWidth = 2.5;
-  g.beginPath(); pts.forEach((p,i) => i ? g.lineTo(p[0],p[1]) : g.moveTo(p[0],p[1])); g.stroke();
-  pts.forEach((p,i) => { g.fillStyle='#4f46e5'; g.beginPath(); g.arc(p[0],p[1],4,0,Math.PI*2); g.fill(); g.fillStyle='#0f172a'; g.fillText('第'+recs[i].attempt+'次', p[0], H-8); });
+  g.beginPath(); pts.forEach((p,i) => i ? g.lineTo(p.x,p.y) : g.moveTo(p.x,p.y)); g.stroke();
+  g.font = '10px Microsoft YaHei, sans-serif';
+  pts.forEach((p) => {
+    g.fillStyle='#4f46e5'; g.beginPath(); g.arc(p.x,p.y,4,0,Math.PI*2); g.fill();
+    g.fillStyle='#0f172a'; g.fillText('第' + p.r.attempt + '次', p.x, H-8);
+    g.fillStyle='#4f46e5'; g.fillText(String(p.r.total), p.x, p.y - 10);
+  });
 }
 
 $('#btnClear').addEventListener('click', () => { saveRecs([]); renderHistory(); toast('已清空本地记录'); });
