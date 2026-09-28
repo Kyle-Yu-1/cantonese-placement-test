@@ -87,7 +87,7 @@ $('#btnRec').addEventListener('click', async () => {
       stream,
       chunks: [],
       mime: (['audio/webm','audio/mp4','audio/ogg'].find(m => MediaRecorder.isTypeSupported(m)) || ''),
-      rec: null, ctx: null, analyser: null, raf: 0, samples: [], start: 0
+      rec: null, ctx: null, analyser: null, raf: 0, samples: [], timeBuf: [], pitches: [], start: 0
     };
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const src = ctx.createMediaStreamSource(stream);
@@ -100,6 +100,18 @@ $('#btnRec').addEventListener('click', async () => {
       let sum = 0; for (let i = 0; i < buf.length; i++){ const v = (buf[i]-128)/128; sum += v*v; }
       const rms = Math.sqrt(sum/buf.length);
       recorder.samples.push(rms);
+      // 基频（音高）估计：自相关，约每 8 帧估一次
+      recorder.pitchTick = (recorder.pitchTick || 0) + 1;
+      if (recorder.pitchTick % 8 === 0 && rms > 0.02){
+        const fb = new Float32Array(analyser.fftSize);
+        analyser.getFloatTimeDomainData(fb);
+        recorder.timeBuf.push(...fb);
+        if (recorder.timeBuf.length > 4096) recorder.timeBuf.splice(0, recorder.timeBuf.length - 4096);
+        if (recorder.timeBuf.length >= 2048){
+          const f0 = estF0(recorder.timeBuf.slice(-2048), ctx.sampleRate);
+          if (f0) recorder.pitches.push(f0);
+        }
+      }
       $('#levelBar').style.width = Math.min(100, rms*260) + '%';
       recorder.raf = requestAnimationFrame(tick);
     };
@@ -190,8 +202,14 @@ async function stopAll(){
     const mean = samples.length ? samples.reduce((a,b)=>a+b,0)/samples.length : 0;
     const varSum = samples.length ? samples.reduce((a,b)=>a+(b-mean)*(b-mean),0)/samples.length : 0;
     const silent = samples.length ? samples.filter(v => v < 0.025).length / samples.length : 0;
+    const tailN = Math.max(1, Math.floor(samples.length * 0.15));
+    const tail = samples.slice(samples.length - tailN);
+    const tailMean = tail.length ? tail.reduce((a,b)=>a+b,0)/tail.length : 0;
+    const pitches = recorder.pitches || [];
+    const pm = pitches.length ? pitches.reduce((a,b)=>a+b,0)/pitches.length : 0;
+    const pvar = pitches.length ? Math.sqrt(pitches.reduce((a,b)=>a+(b-pm)*(b-pm),0)/pitches.length) : 0;
     const text = $('#transcript').value.trim();
-    metrics = { hasAudio:true, duration:sec, rate: text ? text.length/sec*60 : 0, pauseRatio: silent, volumeVar: Math.sqrt(varSum) };
+    metrics = { hasAudio:true, duration:sec, rate: text ? text.length/sec*60 : 0, pauseRatio: silent, volumeVar: Math.sqrt(varSum), rmsMean: mean, endHold: mean ? tailMean/mean : 1, pitchVar: pm ? pvar/pm : 0 };
     try { cur.stream.getTracks().forEach(t=>t.stop()); cur.ctx.close(); } catch(e){}
     recorder = null;
     finalizeAfterStop();
@@ -268,6 +286,27 @@ function doScore(){
 }
 
 /* ---------------- scoring engine ---------------- */
+function estF0(buf, sampleRate){
+  // 归一化自相关基频估计（70–350 Hz）
+  const n = buf.length;
+  let e0 = 0; for (let i=0;i<n;i++) e0 += buf[i]*buf[i];
+  if (e0 <= 0) return null;
+  const rms = Math.sqrt(e0/n);
+  if (rms < 0.01) return null;
+  const minLag = Math.max(2, Math.floor(sampleRate/350));
+  const maxLag = Math.min(n-1, Math.floor(sampleRate/70));
+  let bestLag = -1, best = -1;
+  for (let lag=minLag; lag<=maxLag; lag++){
+    let s = 0;
+    for (let i=0;i<n-lag;i++) s += buf[i]*buf[i+lag];
+    if (s > best){ best = s; bestLag = lag; }
+  }
+  if (bestLag < 0 || best/e0 < 0.4) return null;
+  const f0 = sampleRate/bestLag;
+  if (f0 < 70 || f0 > 350) return null;
+  return f0;
+}
+
 function analyze(text, met){
   const flags = [];
   const hard = [
@@ -280,7 +319,7 @@ function analyze(text, met){
   for (const c of hard) if (c.re.test(text)) flags.push(c.msg);
   const reps = text.match(/(.)\1{2,}/g) || [];
   if (reps.length) flags.push('重复字词：' + Array.from(new Set(reps)).join('、'));
-  const fillers = text.match(/呃|嗯嗯|然后然后|这个这个/g) || [];
+  const fillers = text.match(/呃|嗯嗯|然后然后|这个这个|那个那个|就是说|\bem\b/gi) || [];
   if (fillers.length) flags.push('口头禅：' + Array.from(new Set(fillers)).join('、'));
 
   const groups = [
@@ -329,17 +368,39 @@ function analyze(text, met){
     fluScore = reps.length ? 2 : 3;
   }
 
-  let confScore = 3, confNote;
-  if (met && met.hasAudio && typeof met.volumeVar === 'number'){
-    const v = met.volumeVar;
-    confScore = v > 0.12 ? 4 : v > 0.04 ? 3 : 2;
-    confNote = '由音量/语速波动估算，仅供参考，建议录音后由教练复核';
+  const confFillerCount = fillers.length;
+  const weakWords = (text.match(/可能|大概|也许|应该吧|我觉得吧|差不多|好像是|或许/g) || []).length;
+  let confScore, confNote, confSub = [], confFeatures;
+  if (met && met.hasAudio && typeof met.rmsMean === 'number'){
+    const e1 = met.rmsMean >= 0.03 ? 1 : met.rmsMean >= 0.015 ? 0 : -1;
+    const e2 = met.endHold >= 0.8 ? 1 : met.endHold >= 0.5 ? 0 : -1;
+    const e3 = confFillerCount === 0 ? 1 : confFillerCount <= 2 ? 0 : -1;
+    const e4 = met.rate > 160 ? 1 : met.rate < 90 ? -1 : 0;
+    const e5 = met.pitchVar > 0.06 ? 1 : met.pitchVar < 0.02 ? -1 : 0;
+    confScore = Math.max(1, Math.min(5, 3 + e1 + e2 + e3 + e4 + e5));
+    confSub = [
+      { k:'平均响度', v:e1, d:'RMS 均值 ' + (met.rmsMean*100).toFixed(1) + '（≥3 为足）', w: e1>0?'声音够响亮':e1<0?'整体偏轻，底气不足':'音量一般' },
+      { k:'结尾保持', v:e2, d:'末15%能量/全篇均值 = ' + (met.endHold*100).toFixed(0) + '%', w: e2>0?'收尾不塌':e2<0?'结尾音量衰减，显犹豫':'收尾尚可' },
+      { k:'填充词', v:e3, d:'检测到 ' + confFillerCount + ' 个', w: e3>0?'干净利落':e3<0?'填充词偏多':'有少量填充词' },
+      { k:'语速', v:e4, d:Math.round(met.rate) + ' 字/分', w: e4>0?'语速干脆':e4<0?'偏慢拖沓':'速度适中' },
+      { k:'语调起伏', v:e5, d:'音高波动 CV = ' + (met.pitchVar*100).toFixed(1) + '%', w: e5>0?'有强调起伏':e5<0?'语调平淡':'起伏一般' },
+    ];
+    confFeatures = { rmsMean: met.rmsMean, endHold: met.endHold, fillers: confFillerCount, rate: met.rate, pitchVar: met.pitchVar, weakWords: weakWords };
+    confNote = '由响度/收尾/填充词/语速/语调 5 项估算，可点「AI 复核」二次确认';
   } else {
-    confNote = '文字稿无法观察，按中性 3 分预估';
+    const e3 = confFillerCount === 0 ? 1 : confFillerCount <= 2 ? 0 : -1;
+    const w = weakWords === 0 ? 0 : weakWords <= 2 ? -1 : -2;
+    confScore = Math.max(1, Math.min(5, 3 + e3 + w));
+    confSub = [
+      { k:'填充词', v:e3, d:'检测到 ' + confFillerCount + ' 个', w: e3>0?'干净利落':e3<0?'填充词偏多':'有少量填充词' },
+      { k:'弱化词', v:w, d:'「可能/大概/我觉得吧」× ' + weakWords, w: w===0?'语气确定':weakWords<=2?'略有犹豫':'犹豫词较多' },
+    ];
+    confFeatures = { rmsMean: null, endHold: null, fillers: confFillerCount, rate: null, pitchVar: null, weakWords: weakWords };
+    confNote = '无录音：仅按文本填充词/弱化词估计，录音后更准';
   }
 
   const scores = [fluScore, accScore, compScore, infoScore, structScore, confScore];
-  return { scores, flags, missing, confNote, sentences: sentences.length, avgLen, terms, connectors, inOrder };
+  return { scores, flags, missing, confNote, confSub, confFeatures, sentences: sentences.length, avgLen, terms, connectors, inOrder };
 }
 
 const DIAG = [
@@ -407,7 +468,7 @@ function scoreAndShow(text, met){
   const total = a.scores.reduce((x,y)=>x+y,0);
   const pct = Math.round(total/30*1000)/10;
   const level = pct >= 90 ? '卓越' : pct >= 80 ? '熟练' : pct >= 60 ? '达标' : pct >= 40 ? '发展中' : '起步';
-  current = { attempt, ts: new Date().toISOString(), duration: met.duration || 0, transcript: text, scores: a.scores, total, pct, level, flags: a.flags, missing: a.missing, meta: { sentences: a.sentences, avgLen: a.avgLen, terms: a.terms, connectors: a.connectors }, dims: buildDims(a) };
+  current = { attempt, ts: new Date().toISOString(), duration: met.duration || 0, transcript: text, scores: a.scores, total, pct, level, flags: a.flags, missing: a.missing, meta: { sentences: a.sentences, avgLen: a.avgLen, terms: a.terms, connectors: a.connectors }, dims: buildDims(a), confSub: a.confSub, confFeatures: a.confFeatures };
   renderScore();
   autoSave();
   autoExport();
@@ -431,7 +492,7 @@ function renderScore(){
     tr.innerHTML = '<td>' + DIMS[i] + '</td>' +
       '<td class="auto-' + i + '">' + v + '</td>' +
       '<td><input type="range" min="1" max="5" step="1" value="' + v + '" data-i="' + i + '"></td>' +
-      '<td class="diag">' + (i === 5 ? current.confNote : DIAG[i](v)) + '</td>';
+      '<td class="diag">' + (i === 5 ? confCellHtml() : DIAG[i](v)) + '</td>';
     tbody.appendChild(tr);
   });
   tbody.querySelectorAll('input').forEach(inp => inp.addEventListener('input', e => {
@@ -442,6 +503,8 @@ function renderScore(){
     drawRadar(current.scores);
   }));
   tbody.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => { autoSave(); clearTimeout(syncTimer); syncTimer = setTimeout(syncWord, 400); }));
+  const aiBtn = document.getElementById('btnAIConf');
+  if (aiBtn) aiBtn.addEventListener('click', aiConfirmConfidence);
   const fb = $('#flagsBox');
   if (current.flags.length){
     fb.classList.remove('hidden');
@@ -466,6 +529,36 @@ function recalcTotals(){
   const good = current.level === '达标' || current.level === '熟练' || current.level === '卓越';
   pill.style.background = good ? 'var(--ok-soft)' : 'var(--bad-soft)';
   pill.style.color = good ? 'var(--ok)' : 'var(--bad)';
+}
+
+function confCellHtml(){
+  let h = '<div class="conf-note">' + esc(current.confNote) + '</div>';
+  if (current.confSub && current.confSub.length){
+    h += '<table class="conf-sub"><tbody>';
+    current.confSub.forEach(s => {
+      const sym = s.v > 0 ? '+' + s.v : String(s.v);
+      h += '<tr><td>' + esc(s.k) + '</td><td class="conf-val ' + (s.v>0?'ok':s.v<0?'bad':'') + '">' + sym + '</td><td>' + esc(s.d) + '</td><td>' + esc(s.w) + '</td></tr>';
+    });
+    h += '</tbody></table>';
+  }
+  h += '<button type="button" id="btnAIConf" class="mini">🤖 AI 复核自信度</button><span id="aiConfOut" class="conf-ai"></span>';
+  return h;
+}
+async function aiConfirmConfidence(){
+  const out = document.getElementById('aiConfOut');
+  const btn = document.getElementById('btnAIConf');
+  if (!out || !btn || !current) return;
+  const ep = (localStorage.getItem('pitch_ai_endpoint') || '/api/confidence');
+  out.textContent = ' AI 复核中…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(ep, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ transcript: current.transcript, features: current.confFeatures || {} }) });
+    if (!res.ok) throw new Error('HTTP ' + res.status + (res.status === 404 ? '（AI 复核需部署 Vercel 后端，见 README）' : ''));
+    const j = await res.json();
+    out.innerHTML = ' AI 分：<b>' + j.confidence + '</b>/100 · ' + esc(j.rationale || '') + ' · 建议：' + esc(j.advice || '');
+  } catch(e){
+    out.textContent = ' AI 复核不可用：' + e.message;
+  } finally { btn.disabled = false; }
 }
 
 function drawRadar(scores){

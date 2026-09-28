@@ -43,3 +43,14 @@ a.btn,a.brand{text-decoration:none}
 .hist-grid{display:grid;grid-template-columns:170px 1fr;gap:8px;align-items:start;margin:6px 0}
 .mini-radar{width:160px;height:160px}
 .dim-table.mini td{font-size:12px;padding:3px 6px}
+
+/* 自信度 E1-E5 卡片 */
+.conf-note{margin-bottom:4px;color:#57606a;font-size:.9em;line-height:1.4;}
+.conf-sub{width:100%;border-collapse:collapse;margin:4px 0;font-size:.85em;}
+.conf-sub td{border-bottom:1px solid #eaeef2;padding:2px 4px;vertical-align:top;}
+.conf-val{font-weight:700;}
+.conf-val.ok{color:#1a7f37;}
+.conf-val.bad{color:#cf222e;}
+.conf-ai{margin-top:4px;display:block;font-size:.85em;color:#1f6feb;line-height:1.5;}
+.mini{font-size:.85em;padding:3px 8px;border:1px solid #1f6feb;background:#fff;color:#1f6feb;border-radius:6px;cursor:pointer;}
+.mini:disabled{opacity:.5;cursor:wait;}
