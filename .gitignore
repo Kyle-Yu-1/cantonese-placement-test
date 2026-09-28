@@ -1,2 +1,6 @@
 shots/
 tools/test-bank.json
+tools/.whisper-venv/
+tools/__pycache__/
+_cantonese-archive/
+*.pyc

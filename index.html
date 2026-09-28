@@ -3,24 +3,69 @@
 <head>
 <meta charset='UTF-8'>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
-<title>粤语能力定位测验</title>
+<link rel='icon' href='data:,'>
+<title>中文机械产品介绍训练中心</title>
 <link rel='stylesheet' href='styles.css'>
+<link rel='stylesheet' href='css/pitch.css'>
+<link rel='stylesheet' href='css/train.css'>
 </head>
 <body>
-<header id='topbar' class='hidden'>
-  <button id='brandBtn' class='brand' title='返回首页'>🎙️ 粤语能力定位测验</button>
+<header id='topbar'>
+  <a class='brand' href='index.html'>🎙️ 中文机械产品介绍训练中心</a>
   <div class='top-right'>
-    <label class='switch-label' title='显示或隐藏粤语拼音'><input type='checkbox' id='jpToggle' checked><span>粤拼</span></label>
-    <span id='userChip' class='chip'></span>
-    <button id='logoutBtn' class='btn ghost'>退出</button>
+    <a class='btn ghost' href='pitch-training.html' title='打开独立语音训练页'>打开语音页 ↗</a>
   </div>
 </header>
-<main id='app' class='container'></main>
+<main class='container'>
+  <div id='fileBanner' class='banner hidden'>⚠️ 当前以 file:// 方式打开：练习与打分可用，但「导入更新 Word」「本机转写」需要本地服务。请双击「启动机械产品介绍训练.bat」。</div>
+  <div class='tabs'>
+    <button class='tab active' data-view='home'>🏠 首页</button>
+    <button class='tab' data-view='coach'>🧭 阿基米德教练</button>
+    <button class='tab' data-view='voice'>🎙️ 语音训练</button>
+    <button class='tab' data-view='teach'>📚 教学</button>
+    <button class='tab' data-view='history'>🗂 记录</button>
+  </div>
+
+  <!-- 首页 -->
+  <section id='view-home' class='view'>
+    <div class='card home-hero'>
+      <h2>训练目标</h2>
+      <p>用真实的设计材料（工作纸、CAD、原型、测试数据）打磨一段「能让评审与投资人信服」的中文机械产品介绍，并对照课程 6 维量表（30 分制）持续提分。</p>
+      <div class='home-grid'>
+        <div class='home-card'><b>🧭 阿基米德教练</b><p class='muted small'>九个节点逐个攻：先诊断缺口 → 给你互斥方案选择 → 一个杠杆问题 → 你作答 → 去掉提示再讲一遍。</p><button class='btn primary block' data-go='coach'>开始逐节点训练</button></div>
+        <div class='home-card'><b>🎙️ 语音训练</b><p class='muted small'>录音 + 转写 + 自动六维打分（可手动修正）+ 雷达图，一键导入更新桌面 Word。</p><button class='btn primary block' data-go='voice'>去录音打分</button></div>
+        <div class='home-card'><b>📚 教学</b><p class='muted small'>概念卡、工程介绍九节点、高频错误对照。卡住时随时说「教我」。</p><button class='btn primary block' data-go='teach'>看教学内容</button></div>
+      </div>
+    </div>
+    <div class='card'>
+      <h2>阿基米德提问法怎么用</h2>
+      <ol class='steps'>
+        <li><b>负重</b>：锁定当前介绍里最大的一个说服力缺口。</li>
+        <li><b>支点</b>：从你已经会、已经写过的地方出发。</li>
+        <li><b>杠杆</b>：只问一个最小的问题，撬出你缺的那一环。</li>
+        <li><b>用力</b>：你真正写出来 / 讲出来。</li>
+        <li><b>位移</b>：去掉提示再讲一遍，比较两版变化。</li>
+      </ol>
+      <p class='muted small'>规则：教练不替你写正文；对未验证的数字和「最优/唯一」类说法会当场追问口径。</p>
+    </div>
+  </section>
+
+  <!-- 阿基米德教练 -->
+  <section id='view-coach' class='view hidden'><div id='coachRoot'></div></section>
+
+  <!-- 语音训练（内嵌） -->
+  <section id='view-voice' class='view hidden'>
+    <div class='card'><p class='muted small'>以下为语音训练模块（与独立页完全相同）。若显示异常，可点右上「打开语音页 ↗」。</p></div>
+    <iframe id='voiceFrame' title='语音训练' data-src='pitch-training.html'></iframe>
+  </section>
+
+  <!-- 教学 -->
+  <section id='view-teach' class='view hidden'><div id='teachRoot'></div></section>
+
+  <!-- 记录 -->
+  <section id='view-history' class='view hidden'><div id='histRoot'></div></section>
+</main>
 <div id='toast' class='toast'></div>
-<script src='js/question-bank.js'></script>
-<script src='js/app.js'></script>
-<script src='js/app-views.js'></script>
-<script src='js/cloud.js'></script>
-<script src='js/deepseek.js'></script>
+<script src='js/coach.js'></script>
 </body>
 </html>

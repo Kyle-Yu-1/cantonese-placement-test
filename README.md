@@ -1,101 +1,32 @@
-# 粤语能力定位测验（Cantonese Placement Test）
+# 中文机械产品介绍训练中心
 
-一个可离线运行的**自适应粤语水平定位测验**网页。从零基础起步，按答题表现逐题小幅调整难度，快速定位使用者的粤语等级（L1–L6），并给出各维度分项分、诊断建议、错题本与 14 天学习计划。
+以「阿基米德提问法」为核心的中文机械产品介绍能力训练站：逐节点教练 + 语音录入打分 + 教学模块 + 一键把结果导入桌面 Word。
 
-## 文件结构
+## 页面
 
-- `index.html` 入口页面
-- `styles.css` 样式
-- `js/question-bank.js` 内置题库（单一数据源，90 题，L1–L6 × 6 个维度）
-- `js/app.js` 核心逻辑：账号、存储、粤语语音合成、录音、Rasch 自适应引擎
-- `js/app-views.js` 界面流程：测试、报告、错题本、趋势、设置、评分规则
-- `question-bank.json` 由 `tools/gen-bank.js` 从题库源自动生成的 JSON 版（用于编辑/导入）
-- `api/score.js` AI 口语评分的无服务器函数示例（Vercel，默认 DeepSeek，兼容 OpenAI）
-- `tools/gen-bank.js` 题库生成脚本
+- `index.html` 主站：首页 / 阿基米德教练 / 语音训练（内嵌）/ 教学 / 记录
+- `pitch-training.html` 语音训练独立页（录音、转写、六维打分、雷达图、导入更新 Word）
+- `js/coach.js` 阿基米德教练（九节点：方案选择 → 杠杆问题 → 作答 → 位移练习）
+- `js/pitch.js` 语音训练逻辑
+- `tools/serve.js` 本地服务（静态页 + `/api/word-update` + `/api/transcribe`）
+- `tools/update_word.py` 把评分记录追加进桌面 Word
+- `tools/transcribe.py` + `tools/.whisper-venv` 本机 Whisper 转写兜底
 
-## 快速开始（本地演示模式）
+## 阿基米德提问法五步
 
-直接用浏览器打开 `index.html` 即可（建议 Chrome / Edge）。首次使用先注册一个本地账号，然后点击「开始测试」。
+负重（找最大缺口）→ 支点（从你已会处出发）→ 杠杆（只问一个最小问题）→ 用力（写出来/讲出来）→ 位移（去掉提示再讲一遍）。
 
-- 登录/成绩只保存在**当前浏览器**（localStorage）。
-- 跨设备使用：在「设置 → 数据」里导出 JSON，再到另一台设备导入。
-- 题库可导入/导出：修改 `question-bank.json` 后，在「设置 → 题库」导入即可生效。
+## 启动
 
-## 功能一览
+双击 `启动机械产品介绍训练.bat`，浏览器打开 `http://127.0.0.1:8123/`。
+纯 file:// 打开时「导入更新 Word」与本机转写不可用（自动提示并降级为下载 JSON）。
 
-- 自适应定位：从 L1 起步，相邻题难度跨度小；EAP 后验标准差 ≤ 0.3 时提前结束（最少 8 题、最多 30 题）。
-- 维度覆盖：听力 30%、口语 30%、词汇 15%、语法 10%、粤拼/汉字 10%、俗语地道表达 5%。
-- 题型：选择、填空、连线、听力（浏览器粤语 TTS）、口语（录音 + 评分）。
-- 报告：总分、L1–L6 等级、95% 置信区间、雷达图/分项分、强弱项诊断、建议、14 天学习计划、逐题回顾。
-- 错题本：自动收录、重练模式（答对减次数、答错加次数）。
-- 历史趋势：每次定位分折线图与记录列表。
-- 粤拼开关：所有粤语词句附 Jyutping，可一键显示/隐藏。
+## 评分口径
 
-## 浏览器语音与降级
+课程《AI 辅助“机械产品介绍”评分表》：6 维 × 5 分 = 30 分（流利度 / 准确性 / 语言复杂度 / 信息完整性 / 逻辑结构 / 自信度），百分制对应 卓越/熟练/达标/发展中/起步。
 
-- 听力与口语示范使用浏览器 `speechSynthesis`，自动选择 `zh-HK`/粤语音色（如 Windows 的 Tracy、Danny）。
-- 若浏览器没有粤语音色，会自动显示「文字 + 粤拼」降级方案，不中断测试。
-- 口语录音使用 `getUserMedia`，首次使用需要允许麦克风权限。
+## 历史
 
-## AI 口语评分（可选，对应需求「AI 接口」）
-
-1. 把 `api/score.js` 部署为无服务器函数（如 Vercel，路径 `/api/score`）。
-2. 配置环境变量：`OPENAI_API_KEY`（必填）、`SPEECH_MODEL`（默认 `gpt-4o-transcribe`）、`SCORE_API_KEY`（可选，作为请求密钥）。
-3. 在网页「设置 → AI 口语评分接口」填入函数地址与 `SCORE_API_KEY`。
-4. 口语题录音后会自动上传评分；未配置或失败时回退为「示范对照 + 手动打分」。
-
-说明：示例函数用转写文本与示范文本的相似度近似「发音准确度」，声调/流利度为近似值；需要更精细的口音评测时，可将 `api/score.js` 换成 `gpt-4o-audio-preview` 等音频理解模型做逐字点评。
-
-## 题库格式（question-bank.json）
-
-```json
-{
-  "id": "L1-01",
-  "level": 1,
-  "difficulty": -3.9,
-  "dimension": "vocabulary",
-  "type": "mc",
-  "prompt": "「你好」是什么意思？",
-  "text": "你好",
-  "jyutping": "nei5 hou2",
-  "options": ["谢谢", "你好", "再见", "对不起"],
-  "answer": 1,
-  "explanation": "粤语最常用的问候语。"
-}
-```
-
-字段说明：`difficulty` 与能力 θ 同尺度（-5～+5）；`type` 取值 `mc / fill / match / listening / speaking`；`fill` 可加 `accept` 数组放可接受答案；`match` 用 `pairs: [{left,right}]`；`listening` 用 `audioText`；`speaking` 用 `text + jyutping` 作示范。
-
-修改题库后运行 `node tools/gen-bank.js` 同步生成 JSON，或在网页「设置 → 题库 → 导入题库 JSON」直接更新。
-
-## 评分算法
-
-单参数 logistic（Rasch）：P(对)=1/(1+e^(难度-θ))，θ 先验均值 -3.5（零基础），EAP 逐题更新。能力分=(θ+5)×10（0–100）。等级阈值：L1<23.3，L2<36.7，L3<50，L4<63.3，L5<76.7，其余为 L6。详见网页内「评分规则」。
-
-## 已知限制与后续升级
-
-- 本地演示模式没有服务端账号/云同步；正式版可接 Supabase/Firebase 做邮箱登录与跨设备成绩同步。
-- 浏览器粤语 TTS 音色取决于系统；可把 `audioText` 换成真人录音 URL 得到更地道的听力。
-- 内置题库 90 题（每级 15 题），正式使用前仍建议人工审校粤拼与声调，并按同一 schema 扩充题量。
-## 云端同步（Supabase，可选）
-
-1. 到 supabase.com 注册并新建一个项目；
-2. 在项目的 SQL Editor 执行 `supabase/schema.sql`（建 `app_state` 表并开启 RLS）；
-3. 建议在 Authentication → Providers → Email 中关闭 Confirm email，方便演示；
-4. 在项目 Settings → API 复制 Project URL 与 anon public key；
-5. 打开网站「设置 → 云端同步」填这两项 → 「保存并用云端登录」，之后注册/登录即走云端，成绩跨设备同步。
-
-- anon key 本就是公开密钥，网页内填写即可；本项目不会把密钥写进代码。
-- 两项都留空时，全部功能保持纯本地模式，行为与之前完全一致。
-
-## AI 口语评分部署（Vercel）
-
-1. 口语题流程：浏览器语音识别（zh-HK）转写 → 调用接口 → DeepSeek 评分；浏览器不支持识别时自动回退为“录音自评”；
-2. 安装 Vercel CLI：`npm i -g vercel`，然后 `vercel login`；在本项目根目录执行 `vercel` 部署（会自动识别 `api/score.js`）；
-3. 在 Vercel 项目 Settings → Environment Variables 添加：
-   - `DEEPSEEK_API_KEY`（必填，口语评分主用）
-   - `DEEPSEEK_MODEL`（可选，默认 deepseek-chat）
-   - `OPENAI_API_KEY` / `SPEECH_MODEL`（可选，仅使用 OpenAI 转写兼容模式时需要）
-4. 部署后接口地址形如 `https://你的项目.vercel.app/api/score`；
-5. 打开网站「设置 → AI 口语评分接口」，填入该地址与 `SCORE_API_KEY`。
-DeepSeek 说明：DeepSeek 为纯文本模型，本方案用浏览器 SpeechRecognition（语言 zh-HK/粤语）先把跟读转成文字，再把「识别文本 + 示范文本 + 粤拼」交给 DeepSeek 打出发音/声调/流利度三项分。浏览器没有粤语识别能力时会自动降级为录音自评，不影响测试流程。
+原「粤语能力定位测验」代码归档于 `_cantonese-archive/`。
+- 语音录入两条路：① 实时麦克风录音（Edge/Chrome 可同时浏览器识别转写）；② 「📁 上传录音文件」——把手机或其他软件录好的音频上传，由本机 Whisper 转写后自动打分（in-app 浏览器等麦克风不可用时推荐）。
+- 阿基米德教练的每个节点作答与位移练习都支持「🎙️ 语音作答 / 📁 上传录音作答」：录音或上传 → 本机 Whisper 转写 → 自动填入作答框。

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<link rel='icon' href='data:,'>
+<title>机械产品介绍·语音训练</title>
+<link rel='stylesheet' href='styles.css'>
+<link rel='stylesheet' href='css/pitch.css'>
+</head>
+<body>
+<header id='topbar'>
+  <a class='brand' href='index.html' title='返回训练中心首页'>🎙️ 机械产品介绍·语音训练</a>
+  <div class='top-right'>
+    <a class='btn ghost' href='index.html'>返回首页</a>
+  </div>
+</header>
+<main class='container'>
+  <div id='fileBanner' class='banner hidden'>⚠️ 当前以 file:// 方式打开：录音与打分可用，但「导入更新 Word」需要本地服务。请双击「启动机械产品介绍训练.bat」后再用该功能。</div>
+
+  <div class='tabs'>
+    <button class='tab active' data-view='record'>🎤 录入</button>
+    <button class='tab' data-view='score'>📊 打分</button>
+    <button class='tab' data-view='teach'>📚 教学</button>
+    <button class='tab' data-view='history'>🗂 记录</button>
+  </div>
+
+  <!-- 录入 -->
+  <section id='view-record' class='view'>
+    <div class='card'>
+      <div class='row-between'>
+        <b>练习轮次</b>
+        <select id='attemptSel'></select>
+      </div>
+      <p class='muted small'>对着麦克风完整介绍你的瓶盖夹取末端执行器（建议 60–90 秒），系统自动转写并按课程 6 维量表打分。</p>
+      <div class='rec-center'>
+        <button id='btnRec' class='btn primary big'>🎙️ 开始录音</button>
+        <div id='recTime' class='rec-time'>00:00</div>
+        <div class='meter'><i id='levelBar'></i></div>
+      </div>
+      <audio id='recAudio' class='hidden' controls></audio>
+      <div class='row-end' style='margin-top:6px'>
+        <button id='btnAutoTranscribe' class='btn audio hidden'>🔤 自动转写当前录音</button>
+      </div>
+      <div class='row-end' style='margin-top:6px'>
+        <button id='btnUpload' class='btn'>📁 上传录音文件（录音失败时的备用入口）</button>
+        <input type='file' id='fileInput' accept='audio/*' class='hidden'>
+      </div>
+      <div class='live-box' id='liveBox'>识别结果会实时显示在这里。</div>
+      <label class='muted small'>转写文本（可手动修正）：</label>
+      <textarea id='transcript' rows='5' placeholder='开始录音后自动填充，也可直接在这里粘贴或改写…'></textarea>
+      <div id='noTranscript' class='guide hidden'>
+        <b>没有拿到转写文字，所以无法自动打分。</b>原因：本浏览器不支持/受限的语音识别，或没有识别到内容。<br>
+        ① 把转写文本粘贴或输入到上方文本框，再点「打分」；<br>
+        ② 或点「本机 Whisper 转写」用你电脑上的 Whisper 自动转写（需要已安装 faster-whisper）；<br>
+        ③ 或点「📁 上传录音文件」，把你用手机/其他软件录好的音频传进来自动转写。
+        <div class='row-end'><button id='btnWhisper' class='btn'>⚙️ 本机 Whisper 转写</button></div>
+        <div id='whisperStatus' class='status-line muted small hidden'></div>
+      </div>
+      <div class='row-end'>
+        <button id='btnScore' class='btn primary' disabled>停止并打分</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 打分 -->
+  <section id='view-score' class='view hidden'>
+    <div class='card' id='scoreEmpty'><p class='muted'>还没有本轮结果：请先到「录入」录音或填写转写文本并打分。</p></div>
+    <div class='card hidden' id='scorePanel'>
+      <div class='score-head'>
+        <div class='score-big'><span id='totalVal'>0</span><small>/30</small></div>
+        <div class='score-meta'>
+          <div><span class='pill' id='levelPill'>—</span></div>
+          <div class='muted small'>百分制 <b id='pctVal'>0</b> 分</div>
+        </div>
+      </div>
+      <div class='radar-wrap'><canvas id='radar' width='420' height='420'></canvas></div>
+      <table class='dim-table'>
+        <thead><tr><th>维度</th><th>自动分</th><th>修正</th><th>诊断</th></tr></thead>
+        <tbody id='dimBody'></tbody>
+      </table>
+      <div class='flags hidden' id='flagsBox'></div>
+      <div class='feedback hidden' id='feedbackBox'></div>
+      <div class='row-end'>
+        <button id='btnSave' class='btn'>💾 保存本轮</button>
+        <button id='btnWord' class='btn primary'>📄 导入更新 Word</button>
+      </div>
+      <div id='wordStatus' class='status-line muted small'></div>
+    </div>
+  </section>
+
+  <!-- 教学 -->
+  <section id='view-teach' class='view hidden'>
+    <div class='card'><h2>前后练习对比</h2><div id='comparison'></div></div>
+    <div class='card'><h2>核心概念卡</h2><div id='concepts'></div></div>
+    <div class='card'><h2>工程介绍九节点</h2><div id='lessons'></div></div>
+    <div class='card'><h2>高频错误对照</h2><div id='errTable'></div></div>
+  </section>
+
+  <!-- 记录 -->
+  <section id='view-history' class='view hidden'>
+    <div class='card'>
+      <div class='row-between'><b>历史趋势（总分）</b><button id='btnClear' class='btn ghost danger'>清空本地记录</button></div>
+      <canvas id='trend' width='760' height='220'></canvas>
+      <div id='historyList'></div>
+    </div>
+  </section>
+</main>
+<div id='toast' class='toast'></div>
+<script src='js/pitch.js'></script>
+</body>
+</html>
