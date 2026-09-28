@@ -503,8 +503,7 @@ function renderScore(){
     drawRadar(current.scores);
   }));
   tbody.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => { autoSave(); clearTimeout(syncTimer); syncTimer = setTimeout(syncWord, 400); }));
-  const aiBtn = document.getElementById('btnAIConf');
-  if (aiBtn) aiBtn.addEventListener('click', aiConfirmConfidence);
+
   const fb = $('#flagsBox');
   if (current.flags.length){
     fb.classList.remove('hidden');
@@ -541,26 +540,8 @@ function confCellHtml(){
     });
     h += '</tbody></table>';
   }
-  h += '<button type="button" id="btnAIConf" class="mini">🤖 AI 复核自信度</button><span id="aiConfOut" class="conf-ai"></span>';
   return h;
 }
-async function aiConfirmConfidence(){
-  const out = document.getElementById('aiConfOut');
-  const btn = document.getElementById('btnAIConf');
-  if (!out || !btn || !current) return;
-  const ep = (localStorage.getItem('pitch_ai_endpoint') || '/api/confidence');
-  out.textContent = ' AI 复核中…';
-  btn.disabled = true;
-  try {
-    const res = await fetch(ep, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ transcript: current.transcript, features: current.confFeatures || {} }) });
-    if (!res.ok) throw new Error('HTTP ' + res.status + ((res.status === 404 || res.status === 405) ? '（AI 复核需部署 Vercel 后端，见 README）' : ''));
-    const j = await res.json();
-    out.innerHTML = ' AI 分：<b>' + j.confidence + '</b>/100 · ' + esc(j.rationale || '') + ' · 建议：' + esc(j.advice || '');
-  } catch(e){
-    out.textContent = ' AI 复核不可用：' + e.message;
-  } finally { btn.disabled = false; }
-}
-
 function drawRadar(scores){
   const cv = $('#radar'); const g = cv.getContext('2d');
   const W = cv.width, H = cv.height, cx = W/2, cy = H/2, R = Math.min(W,H)/2 - 58, n = 6;

@@ -45,14 +45,3 @@
 
 纯文字稿：仅按填充词 + 弱化词（可能/大概/我觉得吧）估计，得分区间 2–4 分。
 参考：Scherer & London (1973)《The voice of confidence》、INTERSPEECH 2020/2022、Sage 2024，以及 Orai/Yoodli 等工程实践。
-
-## AI 复核自信度（方案 3 · 需 Vercel）
-
-`api/confidence.js` 把介绍稿 + 上述声学特征交给 DeepSeek，返回 0–100 自信分 + 理由 + 建议，作为本地 5 项评分的二次确认。
-
-部署：
-1. Vercel 导入本仓库（`api/` 目录自动识别为无服务器函数）；
-2. Environment Variables 设置 `DEEPSEEK_API_KEY`（可选 `CONF_API_KEY` 作访问口令）；
-3. 部署后前端「🤖 AI 复核自信度」按钮默认 POST `/api/confidence`。
-
-如需独立后端地址，在浏览器控制台执行：`localStorage.pitch_ai_endpoint='https://你的项目.vercel.app/api/confidence'`。未部署时按钮自动提示降级，不影响本地 5 项评分。

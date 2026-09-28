@@ -51,6 +51,3 @@ a.btn,a.brand{text-decoration:none}
 .conf-val{font-weight:700;}
 .conf-val.ok{color:#1a7f37;}
 .conf-val.bad{color:#cf222e;}
-.conf-ai{margin-top:4px;display:block;font-size:.85em;color:#1f6feb;line-height:1.5;}
-.mini{font-size:.85em;padding:3px 8px;border:1px solid #1f6feb;background:#fff;color:#1f6feb;border-radius:6px;cursor:pointer;}
-.mini:disabled{opacity:.5;cursor:wait;}
