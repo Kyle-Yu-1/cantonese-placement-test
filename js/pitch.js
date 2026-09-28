@@ -53,20 +53,33 @@ function ensureSeeded(){
 ensureSeeded();
 if (migratedAtLoad){ setTimeout(function(){ syncWord(); }, 800); }
 
-function initAttempts(){
+function nextAttempt(){
+  const recs = loadRecs();
+  return (recs.reduce((m,r) => Math.max(m, Number(r.attempt) || 0), 0) || 0) + 1;
+}
+function initAttempts(selected){
   const recs = loadRecs();
   const sel = $('#attemptSel');
-  const n = recs.length + 1;
+  const n = nextAttempt();
   sel.innerHTML = '';
   for (let i = 1; i <= Math.max(n, 3); i++) {
     const o = document.createElement('option');
     o.value = i; o.textContent = '第 ' + i + ' 次练习';
     sel.appendChild(o);
   }
-  sel.value = n;
+  sel.value = String(selected || n);
 }
 initAttempts();
-
+$('#attemptSel').addEventListener('change', () => {
+  const a = Number($('#attemptSel').value);
+  const rec = loadRecs().find(r => r.attempt === a);
+  if (rec && rec.scores){
+    current = rec;
+    renderScore();
+    switchView('score');
+    toast('已载入第 ' + a + ' 次练习（仅查看；新录音会自动存为新轮次，不会覆盖）');
+  }
+});
 // 修正：文字内容存在时即可打分（不强制必须先录音）
 const draft = localStorage.getItem('pitch_draft');
 if (draft) { $('#transcript').value = draft; $('#btnScore').disabled = false; }
@@ -441,7 +454,7 @@ function autoSave(){
   const recs = loadRecs().filter(r => r.attempt !== current.attempt);
   recs.push(current);
   saveRecs(recs);
-  initAttempts();
+  initAttempts(current.attempt);
 }
 
 let syncTimer = 0;
@@ -464,13 +477,14 @@ function autoExport(){
 
 function scoreAndShow(text, met){
   const a = analyze(text, met);
-  const attempt = Number($('#attemptSel').value) || (loadRecs().length + 1);
+  const attempt = nextAttempt();
   const total = a.scores.reduce((x,y)=>x+y,0);
   const pct = Math.round(total/30*1000)/10;
   const level = pct >= 90 ? '卓越' : pct >= 80 ? '熟练' : pct >= 60 ? '达标' : pct >= 40 ? '发展中' : '起步';
   current = { attempt, ts: new Date().toISOString(), duration: met.duration || 0, transcript: text, scores: a.scores, total, pct, level, flags: a.flags, missing: a.missing, meta: { sentences: a.sentences, avgLen: a.avgLen, terms: a.terms, connectors: a.connectors }, dims: buildDims(a), confSub: a.confSub, confFeatures: a.confFeatures };
   renderScore();
   autoSave();
+  toast('已自动保存为第 ' + attempt + ' 次练习（每次录音都新建一轮，不会覆盖旧练习）');
   autoExport();
   switchView('score');
   $('#btnRec').textContent = '🎙️ 重新录音';
@@ -717,6 +731,7 @@ function renderHistory(){
   list.querySelectorAll('.del-rec').forEach(b => b.addEventListener('click', () => {
     const a = Number(b.dataset.a);
     saveRecs(loadRecs().filter(r => r.attempt !== a));
+    initAttempts();
     renderHistory();
     syncWord('#syncStatus');
     toast('已删除第 ' + a + ' 次练习，并同步 Word');
