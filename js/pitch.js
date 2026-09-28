@@ -553,7 +553,7 @@ async function aiConfirmConfidence(){
   btn.disabled = true;
   try {
     const res = await fetch(ep, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ transcript: current.transcript, features: current.confFeatures || {} }) });
-    if (!res.ok) throw new Error('HTTP ' + res.status + (res.status === 404 ? '（AI 复核需部署 Vercel 后端，见 README）' : ''));
+    if (!res.ok) throw new Error('HTTP ' + res.status + ((res.status === 404 || res.status === 405) ? '（AI 复核需部署 Vercel 后端，见 README）' : ''));
     const j = await res.json();
     out.innerHTML = ' AI 分：<b>' + j.confidence + '</b>/100 · ' + esc(j.rationale || '') + ' · 建议：' + esc(j.advice || '');
   } catch(e){
