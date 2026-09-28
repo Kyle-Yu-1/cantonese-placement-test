@@ -743,8 +743,40 @@ function renderHistory(){
     syncWord('#syncStatus');
   });
   drawTrend(recs);
+  drawTrendDims(recs);
+  renderTrendLegend();
 }
 
+const DIM_COLORS = ['#2563eb','#dc2626','#059669','#d97706','#7c3aed','#0891b2'];
+function renderTrendLegend(){
+  const box = $('#trendLegend');
+  if (!box) return;
+  box.innerHTML = DIMS.map((d,i) => '<span><i style="background:' + DIM_COLORS[i] + '"></i>' + esc(d) + '</span>').join('');
+}
+function drawTrendDims(recs){
+  const cv = $('#trendDims'); if (!cv) return;
+  const g = cv.getContext('2d');
+  const W = cv.width, H = cv.height, L = 46, Rm = 16, T = 14, B = 24;
+  g.clearRect(0,0,W,H);
+  g.textAlign = 'right'; g.font = '12px Microsoft YaHei, sans-serif';
+  for (let v = 1; v <= 5; v++){ const y = T + (H-T-B)*(1-(v-1)/4); g.strokeStyle='#e8edf4'; g.beginPath(); g.moveTo(L,y); g.lineTo(W-Rm,y); g.stroke(); g.fillStyle='#94a3b8'; g.fillText(String(v), L-8, y+4); }
+  if (!recs.length) return;
+  const sorted = recs.slice().sort((a,b) => Number(a.attempt) - Number(b.attempt));
+  if (sorted.length < 2){ g.textAlign='center'; g.fillStyle='#64748b'; g.fillText('至少两次练习后生成六维趋势', W/2, H/2); return; }
+  const minA = Number(sorted[0].attempt), maxA = Number(sorted[sorted.length-1].attempt), span = Math.max(1, maxA-minA);
+  const x = (r) => L + (W-L-Rm) * (span === 0 ? 0.5 : (Number(r.attempt)-minA)/span);
+  const y = (v) => T + (H-T-B) * (1 - (v-1)/4);
+  g.font = '10px Microsoft YaHei, sans-serif';
+  DIMS.forEach((dn, di) => {
+    g.strokeStyle = DIM_COLORS[di]; g.lineWidth = 2; g.fillStyle = DIM_COLORS[di];
+    g.beginPath();
+    sorted.forEach((r, i) => { const px = x(r), py = y(r.scores[di]); i ? g.lineTo(px,py) : g.moveTo(px,py); });
+    g.stroke();
+    sorted.forEach((r) => { const px = x(r), py = y(r.scores[di]); g.beginPath(); g.arc(px,py,3,0,Math.PI*2); g.fill(); });
+  });
+  g.fillStyle = '#0f172a'; g.textAlign = 'center';
+  sorted.forEach((r) => { g.fillText('第' + r.attempt + '次', x(r), H-6); });
+}
 function drawTrend(recs){
   const cv = $('#trend'); const g = cv.getContext('2d');
   const W = cv.width, H = cv.height, L = 46, Rm = 16, T = 18, B = 28;

@@ -51,3 +51,8 @@ a.btn,a.brand{text-decoration:none}
 .conf-val{font-weight:700;}
 .conf-val.ok{color:#1a7f37;}
 .conf-val.bad{color:#cf222e;}
+
+canvas#trendDims{width:100%;height:auto}
+.trend-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:2px 0 8px;font-size:12px;color:#475569;}
+.trend-legend span{display:inline-flex;align-items:center;gap:4px;}
+.trend-legend i{width:12px;height:3px;border-radius:2px;display:inline-block;}
