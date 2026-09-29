@@ -772,6 +772,49 @@ function drawTrend(recs){
 
 $('#btnClear').addEventListener('click', () => { saveRecs([]); renderHistory(); toast('已清空本地记录'); });
 
+/* ---- 记录备份 / 恢复（导出与导入 JSON，按 attempt 合并） ---- */
+const exportRecsBtn = $('#btnExportRecs');
+const importRecsBtn = $('#btnImportRecs');
+const importExportBox = $('#importExportBox');
+const importStatus = $('#importStatus');
+if (exportRecsBtn) exportRecsBtn.addEventListener('click', function(){
+  if (importExportBox){
+    importExportBox.value = JSON.stringify(loadRecs(), null, 2);
+    importExportBox.focus();
+  }
+  toast('已生成全部记录 JSON（共 ' + loadRecs().length + ' 条），可复制备份');
+});
+if (importRecsBtn) importRecsBtn.addEventListener('click', function(){
+  if (!importExportBox) return;
+  let incoming;
+  try {
+    const data = JSON.parse(importExportBox.value.trim());
+    incoming = Array.isArray(data) ? data : (data && Array.isArray(data.records) ? data.records : []);
+  } catch(e){
+    if (importStatus) importStatus.textContent = '❌ 解析失败：' + e.message;
+    toast('导入失败：JSON 格式错误');
+    return;
+  }
+  if (!incoming.length){
+    if (importStatus) importStatus.textContent = '❌ 没有可导入的记录';
+    return;
+  }
+  const recs = loadRecs();
+  let added = 0, replaced = 0;
+  incoming.forEach(function(inc){
+    const a = Number(inc && inc.attempt);
+    if (!a) return;
+    const i = recs.findIndex(function(r){ return Number(r.attempt) === a; });
+    if (i >= 0){ recs[i] = Object.assign({}, recs[i], inc); replaced++; }
+    else { recs.push(inc); added++; }
+  });
+  saveRecs(recs);
+  initAttempts();
+  renderHistory();
+  if (importStatus) importStatus.textContent = '✅ 已合并：新增 ' + added + ' 条、替换 ' + replaced + ' 条，当前共 ' + recs.length + ' 条。';
+  toast('记录已恢复/合并（新增 ' + added + '，替换 ' + replaced + '）');
+});
+
 function switchView(name){
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.view === name));
   document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));

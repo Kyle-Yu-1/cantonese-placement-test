@@ -118,11 +118,20 @@
     <div class='card'>
       <div id='historyList'></div>
     </div>
+    <div class='card'>
+      <div class='row-between'><b>记录备份 / 恢复</b><span class='muted small'>导出可备份；粘贴 JSON 后导入可恢复误删记录（按「第 N 次」合并，不覆盖其它轮次）</span></div>
+      <textarea id='importExportBox' rows='8' placeholder='导出时自动填充全部记录 JSON；导入时粘贴 JSON 到这里…'></textarea>
+      <div class='row-end' style='margin-top:6px'>
+        <button id='btnExportRecs' class='btn'>📤 导出全部记录</button>
+        <button id='btnImportRecs' class='btn primary'>📥 导入/恢复记录</button>
+      </div>
+      <div id='importStatus' class='status-line muted small'></div>
+    </div>
   </section>
 </main>
 <div id='toast' class='toast'></div>
 <script src='js/engine.js?v=20260929'></script>
-  <script src='js/pitch.js?v=20260929'></script>
+  <script src='js/pitch.js?v=20260929b'></script>
   <script src='js/sync.js?v=20260929'></script>
 </body>
 </html>
