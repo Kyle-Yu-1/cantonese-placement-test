@@ -32,7 +32,14 @@
         <b>练习轮次</b>
         <select id='attemptSel'></select>
       </div>
-      <p class='muted small'>对着麦克风完整介绍你的瓶盖夹取末端执行器（建议 60–90 秒），系统自动转写并按课程 6 维量表打分。</p>
+      <div class='row-between'>
+        <b>训练主题</b>
+        <select id='topicSel'>
+          <option value='gripper'>瓶盖夹爪（默认）</option>
+          <option value='jack'>液压千斤顶 · ENERPAC GBJ010SA</option>
+        </select>
+      </div>
+      <p id='topicHint' class='muted small'></p>
       <div class='rec-center'>
         <button id='btnRec' class='btn primary big'>🎙️ 开始录音</button>
         <div id='recTime' class='rec-time'>00:00</div>
@@ -114,7 +121,8 @@
   </section>
 </main>
 <div id='toast' class='toast'></div>
-<script src='js/pitch.js?v=20260928c'></script>
-  <script src='js/sync.js?v=20260928c'></script>
+<script src='js/engine.js?v=20260929'></script>
+  <script src='js/pitch.js?v=20260929'></script>
+  <script src='js/sync.js?v=20260929'></script>
 </body>
 </html>

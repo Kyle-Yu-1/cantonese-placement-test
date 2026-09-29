@@ -128,7 +128,13 @@ def append_record(payload):
         date_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 
     label = payload.get("label")
-    heading(doc, label or ("第 %d 次语音练习 · %s" % (n, date_str)), 1)
+    topic_name = payload.get("topicName") or payload.get("topic") or ""
+    if not label:
+        if topic_name:
+            label = "第 %d 次语音练习 · %s · %s" % (n, topic_name, date_str)
+        else:
+            label = "第 %d 次语音练习 · %s" % (n, date_str)
+    heading(doc, label, 1)
     para(doc, "时长 %d 秒 · 总分 %d/30 · 百分制 %.1f · 等级 %s" % (int(payload.get("duration") or 0), total, pct, level), size=10, bold=True)
     para(doc, "转写文本：", size=10, bold=True, space_after=2)
     para(doc, str(payload.get("transcript") or "（无）"), size=10, space_after=8)
@@ -137,6 +143,8 @@ def append_record(payload):
     has_dims = isinstance(dims, list) and len(dims) >= 6
     if has_dims:
         rows = [("评价维度", "得分", "评语")] + [(DIMS[i], str(scores[i]), str(dims[i].get("note", "")) if isinstance(dims[i], dict) else str(dims[i])) for i in range(6)]
+        if topic_name:
+            rows += [("练习主题", topic_name, "该主题第 %s 次" % (payload.get("topicAttempt") or "—"))]
         rows += [("合计（满分 30）", str(total), ""), ("百分制得分", "%.1f" % pct, ""), ("等级判定", level, "")]
         table = doc.add_table(rows=0, cols=3)
         table.style = "Table Grid"
@@ -155,6 +163,8 @@ def append_record(payload):
                     p.alignment = WD_ALIGN_PARAGRAPH.LEFT
     else:
         rows = [("评价维度", "得分")] + [(DIMS[i], str(scores[i])) for i in range(6)]
+        if topic_name:
+            rows += [("练习主题", topic_name)]
         rows += [("合计（满分 30）", str(total)), ("百分制得分", "%.1f" % pct), ("等级判定", level)]
         table = doc.add_table(rows=0, cols=2)
         table.style = "Table Grid"
